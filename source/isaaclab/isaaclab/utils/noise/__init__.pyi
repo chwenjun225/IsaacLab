@@ -4,6 +4,9 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
 __all__ = [
+    "AdditiveGaussianNoiseCfg",
+    "AdditiveUniformNoiseCfg",
+    "ConstantBiasNoiseCfg",
     "ConstantNoiseCfg",
     "GaussianNoiseCfg",
     "NoiseCfg",
@@ -18,6 +21,9 @@ __all__ = [
 ]
 
 from .noise_cfg import (
+    AdditiveGaussianNoiseCfg,
+    AdditiveUniformNoiseCfg,
+    ConstantBiasNoiseCfg,
     ConstantNoiseCfg,
     GaussianNoiseCfg,
     NoiseCfg,

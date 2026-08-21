@@ -111,3 +111,8 @@ class NoiseModelWithAdditiveBiasCfg(NoiseModelCfg):
 
     Defaults to True.
     """
+
+# Backward-compatibility aliases (present in upstream IsaacLab, confirmed via official docs)
+AdditiveUniformNoiseCfg = UniformNoiseCfg
+AdditiveGaussianNoiseCfg = GaussianNoiseCfg
+ConstantBiasNoiseCfg = ConstantNoiseCfg
