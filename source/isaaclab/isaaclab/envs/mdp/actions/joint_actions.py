@@ -169,7 +169,8 @@ class JointAction(ActionTerm):
     def process_actions(self, actions: torch.Tensor):
         # store the raw actions
         self._raw_actions[:] = actions
-        # apply the affine transformations
+        # apply the affine transformations (góc mục tiêu = action × action_scale + tư thế mặc định)
+        # Vì vậy action = 0 nghĩa là "đứng ở tư thế mặc định". Policy chỉ cần học độ lệch so với tư thế đó
         self._processed_actions = self._raw_actions * self._scale + self._offset
         # clip actions
         if self.cfg.clip is not None:

@@ -190,7 +190,7 @@ class ManagerBasedRLEnv(ManagerBasedEnv, gym.Env):
             A tuple containing the observations, rewards, resets (terminated and truncated) and extras.
         """
         # process actions
-        self.action_manager.process_action(action.to(self.device))
+        self.action_manager.process_action(action.to(self.device)) # ④ đổi action → góc mục tiêu (1 lần)
 
         self.recorder_manager.record_pre_step()
 
@@ -211,14 +211,14 @@ class ManagerBasedRLEnv(ManagerBasedEnv, gym.Env):
                 self.sim.render(skip_app_pumping=not self.render_enabled)
             self.scene.update(dt=self.step_dt)
         else:
-            for _ in range(self.cfg.decimation):
+            for _ in range(self.cfg.decimation): # lặp 4 lần
                 self._sim_step_counter += 1
                 # set actions into buffers
-                self.action_manager.apply_action()
+                self.action_manager.apply_action() # ④ gửi góc mục tiêu xuống robot
                 # set actions into simulator
                 self.scene.write_data_to_sim()
                 # simulate
-                self.sim.step(render=False)
+                self.sim.step(render=False) # ⑤ PhysX chạy PD + vật lý 5 ms
                 self.recorder_manager.record_post_physics_decimation_step()
                 # render between steps only if the GUI or an RTX sensor needs it.
                 # When render_enabled is False, Kit visualizer (camera/GUI) is skipped
@@ -233,12 +233,13 @@ class ManagerBasedRLEnv(ManagerBasedEnv, gym.Env):
         self.episode_length_buf += 1  # step in current episode (per env)
         self.common_step_counter += 1  # total step (common for all envs)
         # -- check terminations
-        self.reset_buf = self.termination_manager.compute()
+        self.reset_buf = self.termination_manager.compute() # Robot ngã chưa? 
         self.reset_terminated = self.termination_manager.terminated
         self.reset_time_outs = self.termination_manager.time_outs
         # -- reward computation
-        self.reward_buf = self.reward_manager.compute(dt=self.step_dt)
+        self.reward_buf = self.reward_manager.compute(dt=self.step_dt) # chấm điểm
 
+        # ... sau đó tính observation mới → ① cho vòng tiếp theo
         if len(self.recorder_manager.active_terms) > 0:
             # update observations for recording if needed
             self.obs_buf = self.observation_manager.compute()
